@@ -1,4 +1,5 @@
 #include "ladder.h"
+#include <fstream>
 
 void error(string word1, string word2, string msg) {std::cerr << word1 << ' ' << word2 << ": " << msg << std::endl;}
 
@@ -31,3 +32,14 @@ bool edit_distance_within(const std::string& str1, const std::string& str2, int 
 
 bool is_adjacent(const string& word1, const string& word2) {return edit_distance_within(word1, word2, 1);}
 
+void load_words(set<string> & word_list, const string& file_name) {
+    ifstream file(file_name);
+    std::string word;
+    while (getline(file, word))
+        word_list.insert(word);
+    file.close();
+}
+
+void print_word_ladder(const vector<string>& ladder) {
+    for (auto word : ladder) std::cout << word << ' ';
+}
