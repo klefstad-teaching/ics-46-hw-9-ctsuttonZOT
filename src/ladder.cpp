@@ -34,9 +34,9 @@ bool edit_distance_within(const std::string& str1, const std::string& str2, int 
 bool is_adjacent(const string& word1, const string& word2) {return edit_distance_within(word1, word2, 1);}
 
 vector<string> generate_word_ladder(const string& begin_word, const string& end_word, const set<string>& word_list) {
+    if (begin_word == end_word) return {};
     std::queue<std::vector<std::string>> ladder_queue;
-    std::vector<std::string> tmp{begin_word};
-    ladder_queue.push(tmp);
+    ladder_queue.push({begin_word});
     std::unordered_set<std::string> visited;
     visited.insert(begin_word);
 
@@ -56,7 +56,7 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
             }
         }
     }
-    return std::vector<std::string>();
+    return {};
 }
 
 void load_words(set<string> & word_list, const string& file_name) {
