@@ -1,8 +1,6 @@
 #include "ladder.h"
 #include <fstream>
-#include <queue>
 #include <unordered_set>
-#include <vector>
 
 void error(string word1, string word2, string msg) {std::cerr << word1 << ' ' << word2 << ": " << msg << std::endl;}
 
@@ -70,5 +68,11 @@ void load_words(set<string> & word_list, const string& file_name) {
 }
 
 void print_word_ladder(const vector<string>& ladder) {
-    for (auto word : ladder) std::cout << word << ' ';
+    if (ladder.empty()) 
+        std::cout << "No word ladder found.\n";
+    else {
+        std::cout << "Word ladder found: ";
+        for (auto word : ladder) std::cout << word << ' ';
+        std::cout << std::endl;
+    }
 }
