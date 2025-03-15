@@ -1,34 +1,43 @@
 #include "ladder.h"
 #include <fstream>
-#include <unordered_set>
 
 void error(string word1, string word2, string msg) {std::cerr << word1 << ' ' << word2 << ": " << msg << std::endl;}
 
+int diff_chars(const std::string& str1, const std::string& str2, int n) {
+    int cnt = 0;
+    for (int i=0; i < n; ++i) {
+        if (str1[i] != str2[i]) ++cnt;
+    }
+    return cnt;
+}
+
 bool edit_distance_within(const std::string& str1, const std::string& str2, int d) {
-    int m = str1.length();
-    int n = str2.length();
+    int m = str1.size();
+    int n = str2.size();
 
-    // if diff in length is larger than threshold, must be false
     if (abs(n-m) > d) return false;
+    if (n == m) return diff_chars(str1, str2, n) <= d;
+    
+    int prev; 
+    vector<int> curr(n + 1, 0); 
 
-    // make a table to store results of sub-problems
-    vector<vector<int>> results(m + 1, vector<int>(n + 1));
-
-    for (int i = 0; i <= m; i++) 
-        results[i][0] = i;
-    for (int j = 0; j <= n; j++) 
-        results[0][j] = j; 
-
+    for (int j = 0; j <= n; j++)
+        curr[j] = j;
+  
     for (int i = 1; i <= m; i++) {
+        prev = curr[0]; 
+        curr[0] = i;
         for (int j = 1; j <= n; j++) {
+            int temp = curr[j];
             if (str1[i - 1] == str2[j - 1])
-                results[i][j] = results[i - 1][j - 1];
+                curr[j] = prev;
             else
-                results[i][j] = 1 + min({results[i][j - 1], results[i - 1][j], results[i - 1][j - 1]});
+                curr[j] = 1 + min({curr[j - 1], prev, curr[j]});
+            prev = temp;
         }
     }
-
-    return results[m][n] <= d;
+    
+    return curr[n] <= d;
 }
 
 bool is_adjacent(const string& word1, const string& word2) {return edit_distance_within(word1, word2, 1);}
@@ -37,13 +46,14 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
     // if target word not a word in dict or target word = input word, return empty ladder
     if (begin_word == end_word) return {};
     if (word_list.find(end_word) == word_list.end()) return {};
+
     std::queue<std::vector<std::string>> ladder_queue;
     ladder_queue.push({begin_word});
-    std::unordered_set<std::string> visited;
+    std::set<std::string> visited;
     visited.insert(begin_word);
 
     while (!ladder_queue.empty()) {
-        auto ladder = ladder_queue.front();
+        std::vector<std::string> ladder = ladder_queue.front();
         ladder_queue.pop();
         std::string last_word = ladder.back();
         for (std::string word : word_list) {
