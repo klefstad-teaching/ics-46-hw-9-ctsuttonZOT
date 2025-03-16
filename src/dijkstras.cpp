@@ -35,15 +35,17 @@ vector<int> dijkstra_shortest_path(const Graph& G, int source, vector<int>& prev
 
 vector<int> extract_shortest_path(const vector<int>& distances, const vector<int>& previous, int destination) {
     std::vector<int> res;
-    for (int i=destination; i > 0; --i) {
+    for (int i=0; i < destination; ++i) {
         int curr = previous[i];
         if (curr != -1) res.push_back(curr);
     }
+    res.push_back(destination);
     return res;
 }
 
 void print_path(const vector<int>& v, int total) {
     for (int node : v) 
         std::cout << node << ' ';
+    std::cout << std::endl;
     std::cout << "Total cost is " << total << std::endl;
 }
