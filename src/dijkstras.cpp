@@ -1,5 +1,6 @@
 #include "dijkstras.h"
 #include <queue>
+#include <algorithm>
 
 vector<int> dijkstra_shortest_path(const Graph& G, int source, vector<int>& previous) {
     int numVertices = G.numVertices;
@@ -35,11 +36,10 @@ vector<int> dijkstra_shortest_path(const Graph& G, int source, vector<int>& prev
 
 vector<int> extract_shortest_path(const vector<int>& distances, const vector<int>& previous, int destination) {
     std::vector<int> res;
-    for (int i=0; i < destination; ++i) {
-        int curr = previous[i];
-        if (curr != -1) res.push_back(curr);
-    }
-    res.push_back(destination);
+    for (int i=destination; i > -1; i = previous[i])
+        res.push_back(i);
+
+    std::reverse(res.begin(), res.end());
     return res;
 }
 
